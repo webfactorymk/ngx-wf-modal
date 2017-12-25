@@ -51,6 +51,10 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@an
             height: 100%;
         }
 
+        .modal:focus, .modal *:focus {
+            outline: 0 !important;
+        }
+
         .fade {
             opacity: 0;
             -webkit-transition: opacity .15s linear;
