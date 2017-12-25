@@ -57,3 +57,11 @@ typings/
 # dotenv environment variables file
 .env
 
+.idea
+aot
+node_modules
+npm-debug.log
+/typings
+*.map
+/docs/build
+ngfactory

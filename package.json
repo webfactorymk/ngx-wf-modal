@@ -1,0 +1,41 @@
+{
+  "name": "ngx-wf-modal",
+  "version": "1.0.0",
+  "description": "A Customizable Angular X modal component",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "rm -rf dist && ngc"
+  },
+  "files": [
+    "dist",
+    "index.js",
+    "index.d.ts"
+  ],
+  "typings": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WebFactoryMk/ngx-wf-modal.git"
+  },
+  "author": "webfactory",
+  "license": "MIT",
+  "keywords": [
+    "angular2",
+    "angular",
+    "angular4",
+    "modal",
+    "dialog",
+    "ngx",
+    "modal-dialog"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@angular/common": "4.3.2",
+    "@angular/compiler-cli": "4.3.2",
+    "@angular/compiler": "4.3.2",
+    "@angular/core": "4.3.2",
+    "typescript": "2.2.1",
+    "rxjs": "5.2.0",
+    "zone.js": "0.8.4"
+  }
+}
