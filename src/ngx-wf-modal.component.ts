@@ -83,13 +83,6 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@an
             -ms-transform: translate(0, 0);
             -o-transform: translate(0, 0);
             transform: translate(0, 0);
-        }
-
-        @media (min-width: 768px) {
-            .modal-dialog {
-                width: 600px;
-                margin: 30px auto;
-            }
         }`
     ]
 })
