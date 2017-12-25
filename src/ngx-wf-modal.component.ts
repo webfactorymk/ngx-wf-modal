@@ -44,7 +44,7 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@an
             bottom: 0;
             left: 0;
             z-index: 1050;
-            overflow: hidden;
+            overflow: auto;
             -webkit-overflow-scrolling: touch;
             outline: 0;
             width: 100%;
@@ -64,8 +64,7 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@an
 
         .modal-dialog {
             position: relative;
-            width: auto;
-            margin: 10px;
+            margin: 30px auto;
         }
 
         .modal.fade .modal-dialog {
