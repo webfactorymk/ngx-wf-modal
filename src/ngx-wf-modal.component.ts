@@ -6,9 +6,9 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@an
         <div #modal *ngIf="showModal" class="modal custom_modal fade"
              [class.in]="showModal"
              [ngStyle]="{ display: showModal ? 'block' : 'none' }"
-             (keydown.esc)="escapeClicked()" (click)="outsideClick()"
+             (keydown.esc)="escapeClicked()" (click)="outsideClick($event)"
              tabindex="-1" role="dialog">
-            <div tabindex="0" [class]="getCustomClasses()" (click)="stopModalFromClosing()">
+            <div tabindex="0" [class]="getCustomClasses()" (click)="stopModalFromClosing($event)">
                 <div *ngIf="showModal" class="modal-content">
                     <div class="modal-header">
                         <button *ngIf="hasCloseButton" type="button" class="close" data-dismiss="modal"
@@ -165,7 +165,7 @@ export class NgxWfModalComponent {
         }
     }
 
-    stopModalFromClosing(event: MouseEvent) {
+    stopModalFromClosing(event: Event) {
         event && event.stopPropagation();
     }
 

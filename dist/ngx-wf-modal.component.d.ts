@@ -21,7 +21,7 @@ export declare class NgxWfModalComponent {
     outsideClick(): void;
     escapeClicked(): void;
     toggleBodyScroll(): void;
-    stopModalFromClosing(event: MouseEvent): void;
+    stopModalFromClosing(event: Event): void;
     isModalOpened(): boolean;
     getCustomClasses(): string;
 }
