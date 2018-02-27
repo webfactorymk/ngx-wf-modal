@@ -1,14 +1,17 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
+import {
+    AfterContentInit,
+    Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer, Renderer2,
+    ViewChild
+} from "@angular/core";
 
 @Component({
     selector: "ngx-wf-modal",
     template: `
-        <div #modal *ngIf="showModal" class="modal custom_modal fade"
+        <div #modal *ngIf="showModal" id="ngx-wf-modal" class="modal custom_modal fade"
              [class.in]="showModal"
              [ngStyle]="{ display: showModal ? 'block' : 'none' }"
-             (keydown.esc)="escapeClicked()" (click)="outsideClick($event)"
-             tabindex="-1" role="dialog">
-            <div tabindex="0" [class]="getCustomClasses()" (click)="stopModalFromClosing($event)">
+             (keydown.esc)="escapeClicked()" tabindex="-1" role="dialog">
+            <div tabindex="0" [class]="getCustomClasses()" #modalWrapper>
                 <div *ngIf="showModal" class="modal-content">
                     <div class="modal-header">
                         <button *ngIf="hasCloseButton" type="button" class="close" data-dismiss="modal"
@@ -107,8 +110,14 @@ export class NgxWfModalComponent {
     @Output() onModalCancel = new EventEmitter<any>();
 
     @ViewChild("modal") modal: ElementRef;
+    @ViewChild("modalWrapper") modalWrapper: ElementRef;
 
     showModal: boolean = false;
+
+    clickListener: Function;
+
+    constructor(private _elementRef: ElementRef, private _renderer: Renderer) {
+    }
 
     open() {
         if (this.showModal) {
@@ -118,6 +127,23 @@ export class NgxWfModalComponent {
         this.showModal = true;
         this.toggleBodyScroll();
         this.onModalOpened.emit();
+
+        setTimeout(() => {
+            this.clickListener = this._renderer.listenGlobal("document", "click",
+                (event: any) => {
+                    let clickedInsideModal = false;
+                    for (let path of event.path) {
+                        if (path == this.modalWrapper.nativeElement) {
+                            clickedInsideModal = true;
+                            break;
+                        }
+                    }
+
+                    if (!clickedInsideModal) {
+                        this.outsideClick();
+                    }
+                });
+        }, 1)
     }
 
     close() {
@@ -128,6 +154,7 @@ export class NgxWfModalComponent {
         this.showModal = false;
         this.toggleBodyScroll();
         this.onModalClosed.emit();
+        this.clickListener();
     }
 
     submit() {
@@ -166,7 +193,7 @@ export class NgxWfModalComponent {
     }
 
     stopModalFromClosing(event: Event) {
-        event && event.stopPropagation();
+        // event && event.stopPropagation();
     }
 
     isModalOpened() {

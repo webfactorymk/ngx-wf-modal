@@ -2,7 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var NgxWfModalComponent = (function () {
-    function NgxWfModalComponent() {
+    function NgxWfModalComponent(_elementRef, _renderer) {
+        this._elementRef = _elementRef;
+        this._renderer = _renderer;
         this.hasCloseButton = true;
         this.closeOnEscape = true;
         this.closeOnOutsideClick = true;
@@ -17,12 +19,28 @@ var NgxWfModalComponent = (function () {
         this.showModal = false;
     }
     NgxWfModalComponent.prototype.open = function () {
+        var _this = this;
         if (this.showModal) {
             return;
         }
         this.showModal = true;
         this.toggleBodyScroll();
         this.onModalOpened.emit();
+        setTimeout(function () {
+            _this.clickListener = _this._renderer.listenGlobal("document", "click", function (event) {
+                var clickedInsideModal = false;
+                for (var _i = 0, _a = event.path; _i < _a.length; _i++) {
+                    var path = _a[_i];
+                    if (path == _this.modalWrapper.nativeElement) {
+                        clickedInsideModal = true;
+                        break;
+                    }
+                }
+                if (!clickedInsideModal) {
+                    _this.outsideClick();
+                }
+            });
+        }, 1);
     };
     NgxWfModalComponent.prototype.close = function () {
         if (!this.showModal) {
@@ -31,6 +49,7 @@ var NgxWfModalComponent = (function () {
         this.showModal = false;
         this.toggleBodyScroll();
         this.onModalClosed.emit();
+        this.clickListener();
     };
     NgxWfModalComponent.prototype.submit = function () {
         this.onModalSubmit.emit();
@@ -63,7 +82,7 @@ var NgxWfModalComponent = (function () {
         }
     };
     NgxWfModalComponent.prototype.stopModalFromClosing = function (event) {
-        event && event.stopPropagation();
+        // event && event.stopPropagation();
     };
     NgxWfModalComponent.prototype.isModalOpened = function () {
         return this.showModal;
@@ -76,13 +95,16 @@ var NgxWfModalComponent = (function () {
 NgxWfModalComponent.decorators = [
     { type: core_1.Component, args: [{
                 selector: "ngx-wf-modal",
-                template: "\n        <div #modal *ngIf=\"showModal\" class=\"modal custom_modal fade\"\n             [class.in]=\"showModal\"\n             [ngStyle]=\"{ display: showModal ? 'block' : 'none' }\"\n             (keydown.esc)=\"escapeClicked()\" (click)=\"outsideClick($event)\"\n             tabindex=\"-1\" role=\"dialog\">\n            <div tabindex=\"0\" [class]=\"getCustomClasses()\" (click)=\"stopModalFromClosing($event)\">\n                <div *ngIf=\"showModal\" class=\"modal-content\">\n                    <div class=\"modal-header\">\n                        <button *ngIf=\"hasCloseButton\" type=\"button\" class=\"close\" data-dismiss=\"modal\"\n                                [attr.aria-label]=\"cancelButtonText || 'Close'\" (click)=\"cancel()\">\n                            <span aria-hidden=\"true\">&times;</span>\n                        </button>\n\n                        <ng-content select=\"ngx-wf-modal-header\"></ng-content>\n                    </div>\n\n                    <div class=\"modal-body\">\n                        <ng-content select=\"ngx-wf-modal-body\"></ng-content>\n                    </div>\n\n                    <div class=\"modal-footer\">\n                        <ng-content select=\"ngx-wf-modal-footer\"></ng-content>\n                        <button *ngIf=\"cancelButtonText\" type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\"\n                                (click)=\"cancel()\">{{ cancelButtonText }}\n                        </button>\n                        <button *ngIf=\"submitButtonText\" type=\"button\" class=\"btn btn-primary\"\n                                (click)=\"submit()\">{{ submitButtonText }}\n                        </button>\n                    </div>\n                </div>\n            </div>\n        </div>\n    ",
+                template: "\n        <div #modal *ngIf=\"showModal\" id=\"ngx-wf-modal\" class=\"modal custom_modal fade\"\n             [class.in]=\"showModal\"\n             [ngStyle]=\"{ display: showModal ? 'block' : 'none' }\"\n             (keydown.esc)=\"escapeClicked()\" tabindex=\"-1\" role=\"dialog\">\n            <div tabindex=\"0\" [class]=\"getCustomClasses()\" #modalWrapper>\n                <div *ngIf=\"showModal\" class=\"modal-content\">\n                    <div class=\"modal-header\">\n                        <button *ngIf=\"hasCloseButton\" type=\"button\" class=\"close\" data-dismiss=\"modal\"\n                                [attr.aria-label]=\"cancelButtonText || 'Close'\" (click)=\"cancel()\">\n                            <span aria-hidden=\"true\">&times;</span>\n                        </button>\n\n                        <ng-content select=\"ngx-wf-modal-header\"></ng-content>\n                    </div>\n\n                    <div class=\"modal-body\">\n                        <ng-content select=\"ngx-wf-modal-body\"></ng-content>\n                    </div>\n\n                    <div class=\"modal-footer\">\n                        <ng-content select=\"ngx-wf-modal-footer\"></ng-content>\n                        <button *ngIf=\"cancelButtonText\" type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\"\n                                (click)=\"cancel()\">{{ cancelButtonText }}\n                        </button>\n                        <button *ngIf=\"submitButtonText\" type=\"button\" class=\"btn btn-primary\"\n                                (click)=\"submit()\">{{ submitButtonText }}\n                        </button>\n                    </div>\n                </div>\n            </div>\n        </div>\n    ",
                 styles: ["\n        .modal {\n            position: fixed;\n            top: 0;\n            right: 0;\n            bottom: 0;\n            left: 0;\n            z-index: 1050;\n            overflow: auto;\n            -webkit-overflow-scrolling: touch;\n            outline: 0;\n            width: 100%;\n            height: 100%;\n        }\n\n        .modal:focus, .modal *:focus {\n            outline: 0 !important;\n        }\n\n        .fade {\n            opacity: 0;\n            -webkit-transition: opacity .15s linear;\n            -o-transition: opacity .15s linear;\n            transition: opacity .15s linear;\n        }\n\n        .fade.in {\n            opacity: 1;\n        }\n\n        .modal-dialog {\n            position: relative;\n            margin: 30px auto;\n        }\n\n        .modal.fade .modal-dialog {\n            -webkit-transition: -webkit-transform .3s ease-out;\n            -o-transition: -o-transform .3s ease-out;\n            transition: transform .3s ease-out;\n            -webkit-transform: translate(0, -25%);\n            -ms-transform: translate(0, -25%);\n            -o-transform: translate(0, -25%);\n            transform: translate(0, -25%);\n        }\n\n        .modal.in .modal-dialog {\n            -webkit-transform: translate(0, 0);\n            -ms-transform: translate(0, 0);\n            -o-transform: translate(0, 0);\n            transform: translate(0, 0);\n        }"
                 ]
             },] },
 ];
 /** @nocollapse */
-NgxWfModalComponent.ctorParameters = function () { return []; };
+NgxWfModalComponent.ctorParameters = function () { return [
+    { type: core_1.ElementRef, },
+    { type: core_1.Renderer, },
+]; };
 NgxWfModalComponent.propDecorators = {
     'hasCloseButton': [{ type: core_1.Input },],
     'closeOnEscape': [{ type: core_1.Input },],
@@ -96,6 +118,7 @@ NgxWfModalComponent.propDecorators = {
     'onModalSubmit': [{ type: core_1.Output },],
     'onModalCancel': [{ type: core_1.Output },],
     'modal': [{ type: core_1.ViewChild, args: ["modal",] },],
+    'modalWrapper': [{ type: core_1.ViewChild, args: ["modalWrapper",] },],
 };
 exports.NgxWfModalComponent = NgxWfModalComponent;
 //# sourceMappingURL=ngx-wf-modal.component.js.map

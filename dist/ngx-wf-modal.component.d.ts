@@ -1,5 +1,7 @@
-import { ElementRef, EventEmitter } from "@angular/core";
+import { ElementRef, EventEmitter, Renderer } from "@angular/core";
 export declare class NgxWfModalComponent {
+    private _elementRef;
+    private _renderer;
     hasCloseButton: boolean;
     closeOnEscape: boolean;
     closeOnOutsideClick: boolean;
@@ -12,7 +14,10 @@ export declare class NgxWfModalComponent {
     onModalSubmit: EventEmitter<any>;
     onModalCancel: EventEmitter<any>;
     modal: ElementRef;
+    modalWrapper: ElementRef;
     showModal: boolean;
+    clickListener: Function;
+    constructor(_elementRef: ElementRef, _renderer: Renderer);
     open(): void;
     close(): void;
     submit(): void;
