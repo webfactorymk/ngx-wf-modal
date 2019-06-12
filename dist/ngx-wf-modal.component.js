@@ -29,8 +29,11 @@ var NgxWfModalComponent = (function () {
         setTimeout(function () {
             _this.clickListener = _this._renderer.listenGlobal("document", "click", function (event) {
                 var clickedInsideModal = false;
-                for (var _i = 0, _a = event.path; _i < _a.length; _i++) {
-                    var path = _a[_i];
+                var eventPath = event.path ||
+                    (event.composedPath && event.composedPath()) ||
+                    _this.getElementPath(event.target);
+                for (var _i = 0, eventPath_1 = eventPath; _i < eventPath_1.length; _i++) {
+                    var path = eventPath_1[_i];
                     if (path == _this.modalWrapper.nativeElement) {
                         clickedInsideModal = true;
                         break;
@@ -89,6 +92,21 @@ var NgxWfModalComponent = (function () {
     };
     NgxWfModalComponent.prototype.getCustomClasses = function () {
         return "modal-dialog " + this.modalSizeClass + " " + this.modalClasses;
+    };
+    NgxWfModalComponent.prototype.getElementPath = function (element) {
+        var path = [];
+        var currentElem = element;
+        while (currentElem) {
+            path.push(currentElem);
+            currentElem = currentElem.parentElement;
+        }
+        if (path.indexOf(window) === -1 && path.indexOf(document) === -1) {
+            path.push(document);
+        }
+        if (path.indexOf(window) === -1) {
+            path.push(window);
+        }
+        return path;
     };
     return NgxWfModalComponent;
 }());

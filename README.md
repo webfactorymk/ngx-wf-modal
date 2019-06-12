@@ -35,24 +35,23 @@ Add the module to your project
 )}
 ```
 
-In the html file, you can insert the Canvas Whiteboard
+In the html file, you can insert the modal component
 
 ```html
 <ngx-wf-modal #modalDialog [hasCloseButton]="hasCloseButton" [closeOnEscape]="closeOnEscape"
 [closeOnOutsideClick]="closeOnOutsideClick" [modalSizeClass]="'modal-lg'"
 (onModalSubmit)="onModalSubmitted()", (onModalCancel)="onModalCancelled()", (onModalClosed)="modalClosed()">
     <ngx-wf-modal-header>
-        div(*ngIf="title") {{title}}
+        <div *ngIf="title">{{title}}</div>
     </ngx-wf-modal-header>
 
     <ngx-wf-modal-body>
-        .alert.alert-danger(*ngIf="message") {{message}}
+       <div class="alert alert-danger" *ngIf="message">{{message}}</div>
     </ngx-wf-modal-body>
 
     <ngx-wf-modal-footer>
-        button.button__rectangle-s.is-gray((click)='modalDialog.close()') OK
+       <button class="btn" (click)="modalDialog.close()">OK</div>
     </ngx-wf-modal-footer>
-
 </ngx-wf-modal>
 ```
 

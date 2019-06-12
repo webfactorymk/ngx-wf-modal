@@ -132,7 +132,11 @@ export class NgxWfModalComponent {
             this.clickListener = this._renderer.listenGlobal("document", "click",
                 (event: any) => {
                     let clickedInsideModal = false;
-                    for (let path of event.path) {
+                    let eventPath = event.path ||
+                        (event.composedPath && event.composedPath()) ||
+                        this.getElementPath(event.target);
+
+                    for (let path of eventPath) {
                         if (path == this.modalWrapper.nativeElement) {
                             clickedInsideModal = true;
                             break;
@@ -202,5 +206,24 @@ export class NgxWfModalComponent {
 
     getCustomClasses() {
         return `modal-dialog ${this.modalSizeClass} ${this.modalClasses}`;
+    }
+
+    private getElementPath(element) {
+        const path = [];
+        let currentElem = element;
+        while (currentElem) {
+            path.push(currentElem);
+            currentElem = currentElem.parentElement;
+        }
+
+        if (path.indexOf(window) === -1 && path.indexOf(document) === -1) {
+            path.push(document);
+        }
+
+        if (path.indexOf(window) === -1) {
+            path.push(window);
+        }
+
+        return path;
     }
 }

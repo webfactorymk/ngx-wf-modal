@@ -29,4 +29,5 @@ export declare class NgxWfModalComponent {
     stopModalFromClosing(event: Event): void;
     isModalOpened(): boolean;
     getCustomClasses(): string;
+    private getElementPath(element);
 }
